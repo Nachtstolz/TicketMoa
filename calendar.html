@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8' />
+        <title>TicketMoa 공연 달력</title>
+        <!--fullcalendar API 사용-->
+        <link href='./fullcalendar-4.4.0/packages/core/main.css' rel='stylesheet' />
+        <link href='./fullcalendar-4.4.0/packages/daygrid/main.css' rel='stylesheet' />
+        <script src='./fullcalendar-4.4.0/packages/core/main.js'></script>
+        <script src='./fullcalendar-4.4.0/packages/interaction/main.js'></script>
+        <script src='./fullcalendar-4.4.0/packages/daygrid/main.js'></script>
+        <!--공연관련 정보 사용하기-->
+        <script src = "info.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: [ 'interaction', 'dayGrid' ],
+            header: { //캘린더 내에 활성화된 버튼들, 작년 내년 올해 등
+                left: 'prevYear,prev,next,nextYear today',
+                center: 'title',
+                right: 'dayGridMonth,dayGridWeek,dayGridDay'
+            },
+            defaultDate: '2020-11-13', //기준 날짜는 임의로 11/15로 설정.
+            navLinks: true, // can click day/week names to navigate views
+            editable: true,
+            eventLimit: true, // allow "more" link when too many events
+            events: [ //URL이 임시방편으로 직접 해당 예매사이트로 가도록 함.
+                {
+                title: stage[0].title,
+                start: '2020-10-27T12:00:00', //시작 시간에 대해서는 형식을 바꿀 수 없어서 그대로 넣는 형식을 취함.
+                color : 'seagreen', //해당 색깔은 예매 날짜
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20007789'
+                },
+                {
+                title: stage[0].title,
+                start: '2020-11-22T17:00:00',
+                color : 'sandybrown', //해당 색깔은 공연 날짜에 해당
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20007789'
+                },
+                {
+                title: stage[1].title,
+                start: '2020-10-27T18:00:00',
+                color : 'seagreen',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20007789'
+                },
+                {
+                title: stage[1].title,
+                start: '2020-11-06T19:30:00',
+                color : 'sandybrown',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20007789'
+                },
+                {
+                title: stage[2].title,
+                start: '2020-11-02T16:00:00',
+                color : 'seagreen',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20007962'
+                },
+                {
+                title: stage[2].title,
+                start: '2020-11-07T17:00:00',
+                color : 'sandybrown',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20007962'
+                },
+                {
+                title: stage[3].title,
+                start: '2020-10-20T16:00:00',
+                color : 'seagreen',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008375'
+                },
+                {
+                title: stage[3].title,
+                start: '2020-11-13T20:00:00',
+                color : 'sandybrown',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008375'
+                },
+                {
+                title: stage[4].title,
+                start: '2020-10-29T19:00:00',
+                color : 'seagreen',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008936'
+                },
+                {
+                title: stage[4].title,
+                start: '2020-11-14T19:00:00',
+                color : 'sandybrown',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008936'
+                },
+                {
+                title: stage[5].title,
+                start: '2020-10-23T15:00:00',
+                color : 'seagreen',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008642'
+                },
+                {
+                title: stage[5].title,
+                start: '2021-10-23T15:00:00',
+                color : 'sandybrown',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008642'
+                },
+                {
+                title: stage[6].title,
+                start: '2020-10-30T14:00:00',
+                color : 'seagreen',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008970'
+                },
+                {
+                title: stage[6].title,
+                start: '2021-01-30T18:00:00',
+                color : 'sandybrown',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008970'
+                },
+                {
+                title: stage[7].title,
+                start: '2020-11-28T15:00:00',
+                color : 'seagreen',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20009657'
+                },
+                {
+                title: stage[7].title,
+                start: '2021-01-09T14:00:00',
+                color : 'sandybrown',
+                url : 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20009657'
+                },
+                {
+                title: stage[8].title,
+                start: '2020-11-23T14:00:00',
+                color : 'seagreen',
+                url :  'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20010149'
+                },
+                {
+                title: stage[8].title,
+                start: '2021-01-16T15:00:00',
+                color : 'sandybrown',
+                url :  'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20010149'
+                },
+                {
+                title: stage[9].title,
+                start: '2020-11-24T14:00:00',
+                color : 'seagreen',
+                url : 'http://ticket.yes24.com/Perf/38058'
+                },
+                {
+                title: stage[9].title,
+                start: '2021-01-09T18:00:00',
+                color : 'sandybrown',
+                url : 'http://ticket.yes24.com/Perf/38058'
+                },
+                {
+                title: stage[10].title,
+                start: '2020-11-19T18:00:00',
+                color : 'seagreen',
+                url: 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008723'
+                },
+                {
+                title: stage[10].title,
+                start: '2020-12-19T18:00:00',
+                color : 'sandybrown',
+                url: 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20008723'
+                },
+                {
+                title: stage[11].title,
+                start: '2020-11-12T17:00:00',
+                color : 'seagreen',
+                url: 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20009587'
+                },
+                {
+                title: stage[11].title,
+                start: '2020-12-12T17:00:00',
+                color : 'sandybrown',
+                url: 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20009587'
+                },
+                {
+                title: stage[12].title,
+                start: '2020-11-13T12:00:00',
+                color : 'seagreen',
+                url: 'http://ticket.yes24.com/Perf/38057'
+                },
+                {
+                title: stage[12].title,
+                start: '2020-12-13T12:00:00',
+                color : 'sandybrown',
+                url: 'http://ticket.yes24.com/Perf/38057'
+                },
+                {
+                title: stage[13].title,
+                start: '2020-11-13T16:00:00',
+                color : 'seagreen',
+                url:  'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20009788'
+                },
+                {
+                title: stage[13].title,
+                start: '2020-12-18T20:00:00',
+                color : 'sandybrown',
+                url:  'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20009788'
+                },
+                {
+                title: stage[14].title,
+                start: '2020-11-26T20:00:00',
+                color : 'seagreen',
+                url: 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20009560'
+                },
+                {
+                title: stage[14].title,
+                start: '2020-12-26T20:00:00',
+                color : 'sandybrown',
+                url: 'http://ticket.interpark.com/Ticket/Goods/GoodsInfo.asp?GoodsCode=20009560'
+                }
+            ]
+            });
+
+            calendar.render();
+        });
+        </script>
+        <style>
+            #title{
+                position: absolute;
+                left:50px;
+                top:50px;
+                }
+            aside{
+                position : fixed;
+                top : 200px;
+                right : 10px;
+                height : 300px;
+                width : 100px;
+            }
+            #aside1{
+                height:50px;
+                width : 100px;
+                background-color:#16A085;
+                text-align:center;
+                line-height:50px;
+            }
+            #aside2{
+                height:250px;
+                width:100px;
+                background-color:#E0E0E0;
+            }
+            #search {
+                height :40px;
+                width: 300px;
+                border: 1px solid #E0E0E0;
+                background: #ffffff;
+                position: absolute;
+                left:820px; 
+                top:90px;
+            }
+            #search>input {
+                font-size: 15px;
+                width: 200px;
+                padding: 10px;
+                border: 0px;
+                outline: none;
+                float: left;
+                line-height:100%;
+            }
+            #search>button {
+                width: 50px;
+                height: 100%;
+                border: 0;
+                background: #9E9E9E;
+                outline: none;
+                float: right;
+                color:#ffffff; 
+            }
+            body{
+                margin: 0;
+            }
+            #concert {
+                height :25px;
+                background: #16A085;
+            }
+            #callendar, #comment, #site {
+                height : 25px;
+                background-color: #9E9E9E;
+            }
+            #menubar {
+                left:50px; 
+                top:150px;
+                list-style: none;
+                height: 39px;
+                padding: 0;
+                margin: 0;
+                background: #E0E0E0;
+                width: 1080px;
+                position: absolute;
+            }
+            #menubar li{
+                float: left;
+                position: relative;
+                margin: 0px 0px 30px 30px;
+                color: black;
+                padding :0;
+            }
+            #menubar li a{
+                display: block;
+                font-family: "Han Sans";
+                font-weight: bold;
+                font-size: 18px;
+                padding: 7px 8px;
+                margin : 0;
+                color :white;
+                text-decoration: none;
+                width: 134px;
+                text-align: center;
+                text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+                border-radius: 5px;
+            }
+            #menubar ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                position: absolute;
+                left: 0;
+                top: 40px;
+                width: 150px;
+                height: 272px;
+                background: #E0E0E0;
+                text-align: center;
+                opacity: 0;
+                visibility: hidden;
+                z-index : 999;
+            }
+            #menubar ul li {
+                float: none;
+                margin: 0;
+                padding: 0;
+            }
+            #menubar ul a {
+                font-size: 15px;
+                font-weight: normal;
+                color:black;
+                text-align: center;
+                border-radius: 0px;
+                width: 110px;
+                height:20px;
+                margin: 0px 9px 0px 12px;
+            }
+            #menubar li:hover ul {
+                opacity: 1;
+                visibility: visible;
+            }
+            #menubar li:hover ul li {
+                height: 34px;
+                overflow: visible;
+                padding: 0;
+            }
+            #subcategory{
+                background: white;
+            }
+            #sub{
+                position: absolute;
+                opacity: 0;
+                visibility: hidden; 
+            }
+            #menu>div{
+                width: 150px;
+                height:25px;
+                text-align: center;
+                color: black;
+                line-height:25px;
+            }
+            #minimenu {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+            #minimenu > li {
+                font-size: 0.9em;
+                color: #9E9E9E;
+                float:left;
+                text-align: center;
+                position: relative;
+            }
+            #minimenu >li > a{
+                color : #9E9E9E;
+                text-decoration:none;
+            }
+            /* 미니메뉴바 알림 개수 */
+            #mycount{
+                display:inline-block;
+                width:16px;
+                height:16px;
+                border-radius: 8px;
+                background-color: red;
+                color:white;
+                margin:0px 0px 0px 3px;
+                font-size: 0.8em;
+            }
+            #bodi {
+                top : 195px;
+                left : 50px;
+                position : absolute;
+                margin: 10px 0px;
+                padding: 0;
+                font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+                font-size: 14px;
+            }
+            #calendar {
+                width: 1080px;
+                margin: 0 auto;
+            }
+        </style>
+        <script src="performance.js"></script>
+        <script src="member.js"></script>
+        <script src="basic.js"></script>
+    </head>
+    <body onload="load()">
+        <header>
+            <img id="title" src="media/title.png" width="250" height="80" alt="TicketMoa" onclick = "location.href = 'main.html'">
+            <!-- 미니메뉴바 -->
+            <ul id="minimenu">
+                <li style="left: 850px; top:1px"><a id="textlogin" href="javascript:logout()">로그아웃</a></li>
+                <li style="left: 856px;">|</li>
+                <li style="left:862px; top:1px"><a id="textassign" href = "assign.html">회원가입</a></li>
+                <li style="left:868px;">|</li>
+                <li style="left:874px; top:1px"><a href = mypage.html>마이페이지</a><span id="mycount"></span></li>
+                <li style="left:880px">|</li>
+                <li style="left:886px; top:1px"><a href = "bookmark.html">즐겨찾기</a></li>
+            </ul>
+            <div id="search">
+                <input type ="text" placeholder="검색어 입력">
+                <button type="submit">검색</button>
+                <!-- 검색어에 따른 검색 결과 나오는 과정 코드 입력 필요 -->
+            </div>
+        </header>
+        <!-- 상단메뉴바 -->
+        <nav>
+            <ul id = "menubar">
+                <li><a id="menu"><div><image src="media/menubar.png" width="20" height="20"></image>
+                    메뉴&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ㅣ</div></a></li>
+                <li><a id = "concert" href="mainconcertk.html">국내콘서트</a>
+                    <ul>
+                        <br>
+                        <li><a id="subcategory" href="mainconcertk.html">Hot 공연</a></li>
+                        <li><a id="subcategory" href="mainconcertk.html">New 공연</a></li>
+                        <li>
+                            <ul id ="sub">
+                                <br>
+                                <li><a id="subcategory" href="mainconcertk.html">장르별</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="rapmainconcertk.html">- 랩/힙합</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="trotmainconcertk.html">- 트로트</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="fanmainconcertk.html">- 팬클럽</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="festivalmainconcertk.html">- 페스티벌</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="indimainconcertk.html">- 발라드/인디</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="etcmainconcertk.html">- 기타</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>       
+                <li><a id = "concert" href="mainconcertov.html">내한콘서트</a>
+                    <ul>
+                        <br>
+                        <li><a id="subcategory" href="mainconcertov.html">Hot 공연</a></li>
+                        <li><a id="subcategory" href="mainconcertov.html">New 공연</a></li>
+                        <li>
+                            <ul id ="sub">
+                                <br>
+                                <li><a id="subcategory" href="mainconcertov.html">장르별</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="rapmainconcertov.html">- 랩/힙합</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="trotmainconcertov.html">- 트로트</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="fanmainconcertov.html">- 팬클럽</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="festivalmainconcertov.html">- 페스티벌</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="indimainconcertov.html">- 발라드/인디</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="etcmainconcertov.html">- 기타</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>       
+                <li><a id="callendar" href="calendar.html">달력</a></li>
+                <li><a id="comment" href="list_prac.html">후기</a></li>
+                <li><a id="site" href="sitegroup.html">예매사이트</a></li>
+            </ul>
+        </nav>
+        <aside>
+            <div id="aside1">최근 본 공연</div>
+            <div id="aside2">
+                <!-- 최근 본 공연 코드 입력 필요 -->
+            </div>
+        </aside>
+        <nav id = "bodi">
+            <div id='calendar'></div>
+        </nav>
+    </body>
+</html>

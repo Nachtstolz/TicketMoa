@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ticket Moa 회원가입</title>
+        <script src="memberassign.js">
+        </script>
+        <script>
+            //회원가입 형식 조건 확인 위한 변수 선언
+            var special= /[~!@#$%^&*()_+|<>?:{}]/;
+            var st=/^[a-zA-A0-9]{8,16}$/;
+            var st2=/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-A]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+            //회원가입 각 항목에 대한 완료 여부 변수 선언
+            //2=경고메시지 한 번도 출력 안된 상황
+            //0=경고메시지 출력된 상황
+            //1=회원가입 항목 완료
+            var idcheck=2;
+            var passwordcheck=2;
+            var namecheck=0;
+            var emailagreecheck=0;
+
+            function emailchecking(){  //이메일 형식 확인과 중복 확인 함수
+                var id=document.getElementById("idinput").value;
+                //이메일 형식 확인
+                if(st2.test(id)!=true){  //이메일 형식 미충족
+                    alert("이메일 형식으로 입력해주세요.")
+                }
+                else{   //이메일 형식 충족
+                    //이메일 중복 여부 확인
+                    var ox=0;
+                    for(var i=0; i<memberarray.length;i++){  
+                        var idex=memberarray[i].id;
+                        if(id===idex){  //이메일 중복 시
+                            ox=1;
+                            break;
+                        }                    
+                    }
+
+                    var newp;
+                    if(ox==1){  //이메일 중복일 시
+                        if(idcheck===0){
+                            var deletebox=document.getElementById("newpbox");
+                            var deleteparent=deletebox.parentElement;
+                            deleteparent.removeChild(deletebox);
+                        }
+
+                        newp=document.createElement("p");
+                        newp.innerHTML="이미 사용중인 아이디입니다.";
+                        newp.style.color="red";
+                        newp.style.width="655px";
+                        newp.style.margin="0px";
+                        newp.style.textAlign="right";
+                        newp.setAttribute("id","newpbox");
+
+                        var parent=document.getElementById("id");
+                        parent.appendChild(newp);
+
+                        idcheck=0;
+                    }
+                    else{  //이메일 중복 아닐 시
+                        var newp2=document.createElement("p");
+                        newp2.innerHTML="사용 가능한 아이디입니다.";
+                        newp2.style.color="blue";
+                        newp2.style.width="640px";
+                        newp2.style.margin="0px";
+                        newp2.style.textAlign="right";
+
+                        if(idcheck===0){
+                            var deletebox=document.getElementById("newpbox");
+                            var deleteparent=deletebox.parentElement;
+                            deleteparent.removeChild(deletebox);
+                        }
+                        
+                        var parent=document.getElementById("id");
+                        parent.appendChild(newp2);
+                        idcheck=1;
+                    }
+                }
+            }
+
+            var password;
+            function passwordchecking(obj){  //비밀번호 형식 확인 함수
+                password=document.getElementById("passwordinput").value;
+                if(st.test(password)==true || special.test(password)==true){}  //비밀번호 형식 충족
+                else{  //비밀번호 형식 미충족
+                    if(password==""){
+                        alert("비밀번호를 입력해주세요.")
+                    }
+                    else{
+                        alert("8-16자의 영어 대소문자, 숫자, 특수문자를 이용해서 입력해주세요.");
+                        obj.value="";
+                    }
+                    obj.focus();
+                }
+            }
+
+            function passwordrechecking(obj){  //비밀번호 확인 함수
+                var passwordtest=document.getElementById("passwordtestinput").value;
+                if(password!=passwordtest){  //비밀번호 확인 실패 시
+                    if(passwordcheck===0){
+                        var deletebox=document.getElementById("newpbox");
+                        var deleteparent=deletebox.parentElement;
+                        deleteparent.removeChild(deletebox);
+                    }
+
+                    newp=document.createElement("p");
+                    newp.innerHTML="비밀번호가 일치하지 않습니다.";
+                    newp.style.color="red";
+                    newp.style.width="670px";
+                    newp.style.margin="0px";
+                    newp.style.textAlign="right";
+                    newp.setAttribute("id","newpbox");
+
+                    var parent=document.getElementById("passwordtest");
+                    parent.appendChild(newp);
+                    obj.value="";
+
+                    passwordcheck=0;
+                }
+                else{  
+                    if(passwordtest==""){  //비밀번호 확인폼에 아무것도 입력 되지 않았을 때
+                        alert("비밀번호 확인을 위해 비밀번호를 먼저 입력해주세요.")
+                        obj.focus();
+                    }
+                    else{  //비밀번호 확인 성공 시
+                        var newp2=document.createElement("p");
+                        newp2.innerHTML="비밀번호가 일치합니다.";
+                        newp2.style.color="blue";
+                        newp2.style.width="619px";
+                        newp2.style.margin="0px";
+                        newp2.style.textAlign="right";
+
+                        if(passwordcheck===0){
+                            var deletebox=document.getElementById("newpbox");
+                            var deleteparent=deletebox.parentElement;
+                            deleteparent.removeChild(deletebox);
+                        }
+                        
+                        var parent=document.getElementById("passwordtest");
+                        parent.appendChild(newp2);
+                        passwordcheck=1;
+                    }
+                }
+            }
+
+            function namechecking(){  //이름 확인 함수
+                var name=document.getElementById("nameinput").value;
+                if(name!=""){
+                    namecheck=1;
+                }
+            }
+
+            function emailagreechecking(){  //이메일동의 확인 함수
+                emailagreecheck=1;
+            }
+
+            function assign(){  //회원가입 함수
+                var okid=document.getElementById("idinput");
+                var okpassword=document.getElementById("passwordtestinput");
+                var okname=document.getElementById("nameinput");
+
+                if(idcheck==0 || idcheck==2){  //아이디 항목을 완료하지 않았을 때
+                    alert("아이디를 확인해주세요.");
+                    okid.focus();
+                }
+                else if(passwordcheck==0 || passwordcheck==2){  //비밀번호 항목을 완료하지 않았을 때
+                    alert("비밀번호를 확인해주세요.");
+                    okpassword.focus();
+                }
+                else if(namecheck==0){  //이름 항목을 완료하지 않았을 때
+                    alert("이름을 확인해주세요.");
+                    okname.focus();
+                }
+
+                if(idcheck==1 && passwordcheck==1 && namecheck==1){  //회원 가입 완료
+                    memberarray[memberarray.length]=new member(okid.value,okpassword.value,okname.value,emailagreecheck);
+                    alert("회원가입을 완료하였습니다.");
+                    window.open("main.html","_self");
+                }
+            }
+        </script>
+        <style>
+            /* 회원가입 폼 */
+            #assigngroup { 
+                border:none;
+                width:100%;
+            }
+            #title{
+                text-align: center;
+                width:100%;
+            }
+            img{
+                margin-left:30px;
+            }
+            #id, #passwordtest{
+                text-align: center;
+                width:100%;
+                margin:15px;
+            }
+            #password, #name{
+                text-align: center;
+                margin:15px;
+                width:100%;
+            }
+            #emailagree{
+                text-align: center;
+                margin-top:15px;
+                margin-bottom:10px;
+            }
+            /* 회원가입 각 항목 입력 input */
+            #idinput{
+                height:28px;
+                width:271px;
+                margin:6px 0px;
+                border:1px solid gray;
+                border-radius: 3px;
+            }
+            #passwordtestinput, #passwordinput, #nameinput{
+                height:28px;
+                width:346px;
+                margin:6px 0px;
+                border:1px solid gray;
+                border-radius: 3px;
+            }
+            /* 아이디 중복 확인 버튼 */
+            #idtestbutton{
+                height:32px;
+                width:70px;
+                border-radius: 3px;
+                border:1px solid #16A085;
+                background-color:#16A085;
+                color:white;
+            }
+            /* 회원가입 버튼 */
+            #assign{
+                margin:0px 28px;
+                width:100%;
+                text-align: center;
+            }
+            #assignbutton{
+                height:32px;
+                width:351px;
+                border:1px solid #16A085;
+                background-color:#16A085;
+                color:white;
+                border-radius: 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- 회원가입 폼 -->
+        <fieldset id="assigngroup"> 
+            <div id="title">
+                <img src="media/title.png" width="300" height="100" alt="TicketMoa" onclick = "location.href = 'main.html'">
+            </div>
+            <br>
+            <!-- 아이디 입력 폼 -->
+            <div id="id">
+                <p style="margin:0px; width: 497px; text-align: right;">
+                    아이디
+                </p>
+                <input type="text" id="idinput" value="" placeholder="  이메일을 입력해주세요" required>
+                <input type="button" id="idtestbutton" value="중복확인" onclick="emailchecking()">
+            </div>
+            <!-- 비밀번호 입력 폼 -->
+            <div id="password">
+                <p style="margin:0px; width: 513px; text-align: right;">
+                    비밀번호
+                </p>
+                <input type="password" id="passwordinput" placeholder="  영어 대소문자, 숫자, 특수문자 사용 8-16자" 
+                maxlength="16" value="" onblur="passwordchecking(this)" required>
+            </div>
+            <!-- 비밀번호 확인 입력 폼 -->
+            <div id="passwordtest">
+                <p style="margin:0px; width: 550px; text-align: right;">
+                    비밀번호 확인
+                </p>
+                <input type="password" id="passwordtestinput" placeholder="  비밀번호를 다시 한 번 입력해주세요" value="" 
+                maxlength="16" required onblur="passwordrechecking(this)">
+            </div>
+            <!-- 이름 입력 폼 -->
+            <div id="name">
+                <p style="margin:0px; width: 481px; text-align: right;">
+                    이름
+                </p>
+                <input type="text" id="nameinput" placeholder="  이름을 입력해주세요" onblur="namechecking()" required>
+            </div>
+            <br>
+            <br>
+            <!-- 이메일 동의 여부 체크 폼 -->
+            <div id="emailagree">
+                <label for="confirm">
+                    <input type="checkbox" id="confirm" onclick="emailagreechecking()">
+                    이메일 수신 동의 (알림 시스템에 사용됩니다.)
+                </label>
+            </div>
+        </fieldset>
+        <!-- 회원가입 버튼 -->
+        <div id="assign">
+            <input type="submit" id="assignbutton" value="회원가입" onclick="assign()">
+        </div>
+    </body>
+</html>

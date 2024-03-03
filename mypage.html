@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TicketMoa 마이페이지</title>
+        <script src="performance.js">
+        </script>
+        <script src="member.js">
+        </script>
+        <script>
+            //로그인 된 회원 찾기
+            var loginmember;
+            for(var i=0;i<memberarray.length;i++){
+                if(memberarray[i].login==1){
+                    loginmember=memberarray[i];
+                    break;
+                }
+            }
+
+            //로그아웃 함수
+            function logout(){
+                loginmember.login=0;
+                window.open("main.html","_self");
+            }
+
+            //페이지 로딩 시 실행되는 함수
+            function mypageload(){
+                //미니메뉴바 표시 
+                var textassign=document.getElementById("textassign");
+                textassign.innerHTML=loginmember.name + "님";
+                textassign.setAttribute("href","javascript:function(){}");
+                //프로필 표시
+                var mypagename=document.getElementById("mypagename");
+                mypagename.innerHTML=loginmember.name + "님";
+                //이메일 표시
+                document.getElementById("emailtext").innerHTML=loginmember.id;
+                //알림함 표시
+                var pagecount=0;
+                var today=new Date(2020,10,13);  //오늘 날짜 설정
+                for(var i=0;i<loginmember.mark.length;i++){  //공연 관련 알림 표시
+                    var ex=loginmember.mark[i];
+                    var diffyear=ex.day.getFullYear()-today.getFullYear();
+                    var diffmonth=ex.day.getMonth()-today.getMonth();
+                    var diffdate=ex.day.getDate()-today.getDate();
+                    var parent=document.getElementById("box1");
+
+                    if(diffyear==0 && diffmonth==0 && diffdate==0){  //D-DAY 공연 표시
+                        var children=document.createElement("li");
+                        children.style.margin="10px 0px";
+
+                        children.innerHTML="★공연 D-DAY★  " + ex.title;
+                        children.style.color="#16A085";
+
+                        parent.appendChild(children);
+
+                        pagecount++;
+                    }
+
+                    else if(diffyear==0 && diffmonth==0 && diffdate<8 && 0<diffdate){  //D-7 까지의 공연 표시
+                        var children=document.createElement("li");
+                        children.style.margin="10px 0px";
+
+                        children.innerHTML="공연 D-"+diffdate+"  "+ ex.title+
+                        " ("+ex.day.getFullYear()+"년 "+(ex.day.getMonth()+1)+"월 "+ex.day.getDate()+"일 "+ex.day.getHours()+"시";
+                        if(ex.day.getMinutes()>0){
+                            children.innerHTML=children.innerHTML+" "+ex.day.getMinutes()+"분)";
+                        }
+                        else{
+                            children.innerHTML+=")";
+                        }
+                        children.style.color="black";
+
+                        parent.appendChild(children);
+
+                        pagecount++;
+                    }
+                }
+                
+                var ticketcount=0;
+                for(var i=0;i<loginmember.mark.length;i++){  //예매 관련 알림 표시
+                    //선 표시
+                    var parent=document.getElementById("box1");
+                    if(i==0 && parent.childElementCount!=0){
+                        var jump=document.createElement("hr");
+                        jump.style.margin="15px 0px";
+                        jump.setAttribute("id","jump");
+                        parent.appendChild(jump);
+                    }
+
+                    var ex=loginmember.mark[i];
+
+                    var diffyear=ex.ticket.getFullYear()-today.getFullYear();
+                    var diffmonth=ex.ticket.getMonth()-today.getMonth();
+                    var diffdate=ex.ticket.getDate()-today.getDate();
+
+                    if(diffyear==0 && diffmonth==0 && diffdate==0){  //D-DAY 예매 표시
+                        var children=document.createElement("li");
+                        children.style.margin="10px 0px";
+
+                        children.innerHTML="★예매 D-DAY★ "+ ex.title;
+                        children.style.color="#16A085";
+
+                        parent.appendChild(children);
+
+                        pagecount++;
+                        ticketcount++;
+                    }
+
+                    else if(diffyear==0 && diffmonth==0 && diffdate<8 && 0<diffdate){  //D-7 까지의 예매 표시
+                        var children=document.createElement("li");
+                        children.style.margin="10px 0px";
+
+                        children.innerHTML="예매 D-"+diffdate+"  "+ ex.title+
+                        " ("+ex.ticket.getFullYear()+"년 "+(ex.ticket.getMonth()+1)+"월 "+ex.ticket.getDate()+"일 "+ex.ticket.getHours()+"시";
+                        if(ex.ticket.getMinutes()>0){
+                            children.innerHTML=children.innerHTML+" "+ex.ticket.getMinutes()+"분)";
+                        }
+                        else{
+                            children.innerHTML+=")";
+                        }
+                        children.style.color="black";;
+
+                        parent.appendChild(children);
+
+                        pagecount++;
+                        ticketcount++;
+                    }
+                }
+                if(ticketcount==0){
+                    var parent=document.getElementById("box1");
+                    var children=document.getElementById("jump");
+                    parent.removeChild(children);
+                }
+
+                //미니메뉴바 표시 - 알림개수
+                if(pagecount!=0){
+                    document.getElementById("mycount").innerHTML=pagecount;
+                }
+                else{
+                    document.getElementById("mycount").style.display="none";
+                }
+
+                //나의 관심 공연(즐겨찾기) 리스트 표시
+                var count=0;
+                for(var i=0;i<loginmember.mark.length;i++){
+                    if(count==3){  //공연 3개만 표시
+                        break;
+                    }
+
+                    var ex=loginmember.mark[i];
+
+                    var parent=document.getElementById("box2");
+                    var children=document.createElement("li");
+                    var children2=document.createElement("a");
+                    var children3=document.createElement("span");
+
+                    children.style.margin="10px 0px";
+                    //공연명 표시
+                    children2.innerHTML=ex.title; 
+                    children2.style.color="black";
+                    children2.style.textDecoration="none";
+                    //공연 날짜 표시
+                    children3.innerHTML=ex.day.getFullYear()+"."+(ex.day.getMonth()+1)+"."+ex.day.getDate();
+                    children3.style.color="#9E9E9E";
+                    children3.style.fontSize="0.7em";
+                    children3.style.marginLeft="15px";
+                    children3.style.textAlign="center";
+                    parent.appendChild(children);
+                    children.appendChild(children2);
+                    children.appendChild(children3);
+                    count++;
+                }
+            }
+        </script>
+        <style>
+            /* 색깔코드 -> 옅은회색:#E0E0E0, 짙은회색:#9E9E9E, 초록:#16A085 */
+            /* 기본 작업 */
+            #title{
+                position: absolute;
+                left:50px;
+                top:50px;
+            }
+            aside{
+                position : fixed;
+                top : 200px;
+                right : 10px;
+                height : 300px;
+                width : 100px;
+            }
+            #aside1{
+                height:50px;
+                width : 100px;
+                background-color:#16A085;
+                text-align:center;
+                line-height:50px;
+            }
+            #aside2{
+                height:250px;
+                width:100px;
+                background-color:#E0E0E0;
+            }
+            #search {
+                height :40px;
+                width: 300px;
+                border: 1px solid #E0E0E0;
+                background: #ffffff;
+                position: absolute;
+                left:820px; 
+                top:90px;
+            }
+            #search>input {
+                font-size: 15px;
+                width: 200px;
+                padding: 10px;
+                border: 0px;
+                outline: none;
+                float: left;
+                line-height:100%;
+            }
+            #search>button {
+                width: 50px;
+                height: 100%;
+                border: 0;
+                background: #9E9E9E;
+                outline: none;
+                float: right;
+                color:#ffffff; 
+            }
+            body{
+                margin: 0;
+            }
+            #concert {
+                height :25px;
+                background: #16A085;
+            }
+            #calendar, #comment, #site {
+                height : 25px;
+                background-color: #9E9E9E;
+            }
+            #menubar {
+                left:50px; 
+                top:150px;
+                list-style: none;
+                height: 39px;
+                padding: 0;
+                margin: 0;
+                background: #E0E0E0;
+                width: 1080px;
+                position: absolute;
+            }
+            #menubar li{
+                float: left;
+                position: relative;
+                margin: 0px 0px 30px 30px;
+                color: black;
+                padding :0;
+            }
+            #menubar li a{
+                display: block;
+                font-family: "Han Sans";
+                font-weight: bold;
+                font-size: 18px;
+                padding: 7px 8px;
+                margin : 0;
+                color :white;
+                text-decoration: none;
+                width: 134px;
+                text-align: center;
+                text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+                border-radius: 5px;
+            }
+            #menubar ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                position: absolute;
+                left: 0;
+                top: 40px;
+                width: 150px;
+                height: 272px;
+                background: #E0E0E0;
+                text-align: center;
+                opacity: 0;
+                visibility: hidden;
+                z-index : 999;
+            }
+            #menubar ul li {
+                float: none;
+                margin: 0;
+                padding: 0;
+            }
+            #menubar ul a {
+                font-size: 15px;
+                font-weight: normal;
+                color:black;
+                text-align: center;
+                border-radius: 0px;
+                width: 110px;
+                height:20px;
+                margin: 0px 9px 0px 12px;
+            }
+            #menubar li:hover ul {
+                opacity: 1;
+                visibility: visible;
+            }
+            #menubar li:hover ul li {
+                height: 34px;
+                overflow: visible;
+                padding: 0;
+            }
+            #subcategory{
+                background: white;
+            }
+            #sub{
+                position: absolute;
+                opacity: 0;
+                visibility: hidden; 
+            }
+            #menu>div{
+                width: 150px;
+                height:25px;
+                text-align: center;
+                color: black;
+                line-height:25px;
+            }
+            #minimenu {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+            #minimenu > li {
+                font-size: 0.9em;
+                color: #9E9E9E;
+                float:left;
+                text-align: center;
+                position: relative;
+            }
+            #minimenu >li > a{
+                color : #9E9E9E;
+                text-decoration:none;
+            }
+            /* 미니메뉴바 알림 개수 */
+            #mycount{
+                display:inline-block;
+                width:16px;
+                height:16px;
+                border-radius: 8px;
+                background-color: red;
+                color:white;
+                margin:0px 0px 0px 3px;
+                font-size: 0.8em;
+            }
+
+            /* 프로필 */
+            #navi{
+                float:left;
+            }
+            #profile{
+                position: absolute;
+                top:195px;
+                float:left;
+                left:50px;
+            }
+            /* 마이페이지 메뉴 */
+            #profilemenu{
+                position: absolute;
+                top:380px;
+                left:30px;
+            }
+            .profilemenulist{
+                text-decoration: none;
+                color : black;
+            }
+            /* mypage 본문 */
+            #section{
+                position: absolute;
+                top:220px;
+                left:250px;
+            }
+            /* 이메일 */
+            #change{
+                border-radius: 5px;
+                background: #E0E0E0;
+                border:0px;
+                height :25px;
+                width: 60px;
+            }
+            /* 알림함 */
+            #box1{
+                margin : 0;
+                padding:10px 30px;
+                border:1.3px solid #9E9E9E; 
+                width:740px;
+                list-style-type:disc;
+                list-style-position:inside;
+            }
+            /* 나의 관심 공연(즐겨찾기) */
+            #bookmark{
+                position:absolute;
+            }
+            #box2{
+                margin-top : 8px;
+                padding:10px 30px;
+                border:1.3px solid #9E9E9E; 
+                width:740px;
+                list-style-type: square;
+                list-style-position: inside;
+            }
+            #plus{
+                border-radius: 5px;
+                background: #16A085;
+                border:0px;
+                height :28px;
+                width: 70px;
+                position: absolute;
+                left:730px;
+                color:white;
+            }
+        </style>
+    </head>
+    <body onload="mypageload()">
+        <!-- 기본 작업 -->
+        <header>
+            <!-- 홈페이지 이름 -->
+            <img id="title" src="media/title.png" width="250" height="80" alt="TicketMoa" onclick = "location.href = 'main.html'">
+            <!-- 미니메뉴바 -->
+            <ul id="minimenu">
+                <li style="left: 850px; top:1px"><a id="textlogin" href="javascript:logout()">로그아웃</a></li>
+                <li style="left: 856px;">|</li>
+                <li style="left:862px; top:1px"><a id="textassign" href = "assign.html">회원가입</a></li>
+                <li style="left:868px;">|</li>
+                <li style="left:874px; top:1px"><a href = mypage.html>마이페이지</a><span id="mycount"></span></li>
+                <li style="left:880px">|</li>
+                <li style="left:886px; top:1px"><a href = "bookmark.html">즐겨찾기</a></li>
+            </ul> 
+            <!-- 검색어 입력 -->
+            <div id="search">
+                <input type ="text" placeholder="검색어 입력">
+                <button type="submit">검색</button>
+                <!-- 검색어에 따른 검색 결과 나오는 과정 코드 입력 필요 -->
+            </div>
+        </header>
+        <!-- 상단메뉴바 -->
+        <nav>
+            <ul id = "menubar">
+                <li><a id="menu"><div><image src="media/menubar.png" width="20" height="20"></image>
+                    메뉴&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ㅣ</div></a></li>
+                <li><a id = "concert" href="mainconcertk.html">국내콘서트</a>
+                    <ul>
+                        <br>
+                        <li><a id="subcategory" href="mainconcertk.html">Hot 공연</a></li>
+                        <li><a id="subcategory" href="mainconcertk.html">New 공연</a></li>
+                        <li>
+                            <ul id ="sub">
+                                <br>
+                                <li><a id="subcategory" href="mainconcertk.html">장르별</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="rapmainconcertk.html">- 랩/힙합</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="trotmainconcertk.html">- 트로트</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="fanmainconcertk.html">- 팬클럽</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="festivalmainconcertk.html">- 페스티벌</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="indimainconcertk.html">- 발라드/인디</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="etcmainconcertk.html">- 기타</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>       
+                <li><a id = "concert" href="mainconcertov.html">내한콘서트</a>
+                    <ul>
+                        <br>
+                        <li><a id="subcategory" href="mainconcertov.html">Hot 공연</a></li>
+                        <li><a id="subcategory" href="mainconcertov.html">New 공연</a></li>
+                        <li>
+                            <ul id ="sub">
+                                <br>
+                                <li><a id="subcategory" href="mainconcertov.html">장르별</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="rapmainconcertov.html">- 랩/힙합</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="trotmainconcertov.html">- 트로트</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="fanmainconcertov.html">- 팬클럽</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="festivalmainconcertov.html">- 페스티벌</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="indimainconcertov.html">- 발라드/인디</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="etcmainconcertov.html">- 기타</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>       
+                <li><a id="calendar" href="calendar.html">달력</a></li>
+                <li><a id="comment" href="list_prac.html">후기</a></li>
+                <li><a id="site" href="sitegroup.html">예매사이트</a></li>
+            </ul>
+        </nav>
+        <nav id="navi">
+            <!-- 프로필 -->
+            <div id="profile">
+                <h2><a href="mypage.html" style="text-decoration: none; color:black;">마이페이지</a></h2>
+                <img src="media/profile.png" width=80px height=80px alt="프로필사진">
+                <h4 id="mypagename" style="display:inline">님</h4>
+                <br>
+            </div>
+            <!-- 마이페이지 메뉴 -->
+            <div id="profilemenu">
+                <ul>
+                    <li><a class="profilemenulist" href="memberinformation.html">회원 정보 수정</a></li>
+                    <li><a class="profilemenulist" href="bookmark.html">나의 관심공연</a></li>
+                    <li><a class="profilemenulist" href="write.html">후기 작성하기</a></li>
+                </ul>
+            </div>
+        </nav>
+        <!-- mypage 본문 -->
+        <section id="section">
+            <!-- 이메일 -->
+            <div id="email">
+                이메일 : <span id="emailtext" style="margin: 0px 10px 0px 5px;"></span>
+                <button id="change"><a style="text-decoration: none; color:black;" href="memberinformation.html">변경</a></button>
+            </div>
+            <!-- 알림함 -->
+            <div id="notice">
+                <h4 style="margin-bottom:5px; font-size: 1.2em;">알림함</h4>
+                <ul id="box1">
+                    
+                </ul>
+            </div>
+            <br><br>
+            <!-- 나의 관심 공연(즐겨찾기) -->
+            <div id="bookmark">
+                <h4 style="display:inline; margin-bottom:8px; font-size: 1.2em;">나의 관심 공연</h4>
+                <!-- 나의 관심 공연(즐겨찾기) 더보기 버튼 -->
+                <button id="plus"><a style="text-decoration: none; color:white" href="bookmark.html">더보기</a></button>
+                <ul id="box2">
+                    
+                </ul>
+            </div>
+        </section>
+        <!-- 최근 본 공연 -->
+        <aside>
+            <div id="aside1">최근 본 공연</div>
+            <div id="aside2">
+                <!-- 최근 본 공연 코드 입력 필요 -->
+            </div>
+        </aside>
+    </body>
+</html>

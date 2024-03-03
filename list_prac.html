@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketMoa 후기 보기</title>
+    <script src = list.js>//후기를 위해 쓰인 list.js 속 배열 사용</script> 
+    <script>
+        function loginload(){
+            var parent=document.getElementById("login");
+            var addchildren=document.getElementById("loginsuccess");
+            addchildren.style.display="block";
+            var name=document.getElementById("loginname");
+            name.innerHTML=loginmember.name;
+            parent.appendChild(addchildren);
+
+            var textlogin=document.getElementById("textlogin");
+            textlogin.innerHTML="로그아웃";
+            textlogin.setAttribute("href","javascript:logout()");
+
+            var textassign=document.getElementById("textassign");
+            textassign.innerHTML=loginmember.name + "님";
+            textassign.setAttribute("href","javascript:function(){}");
+        }
+    </script>
+    <style>
+        #title{
+            position: absolute;
+            left:50px;
+            top:50px;
+        }
+        aside{
+            position : fixed;
+            top : 200px;
+            right : 10px;
+            height : 300px;
+            width : 100px;
+        }
+        #aside1{
+            height:50px;
+            width : 100px;
+            background-color:#16A085;
+            text-align:center;
+            line-height:50px;
+        }
+        #aside2{
+            height:250px;
+            width:100px;
+            background-color:#E0E0E0;
+        }
+        #search {
+            height :40px;
+            width: 300px;
+            border: 1px solid #E0E0E0;
+            background: #ffffff;
+            position: absolute;
+            left:820px; 
+            top:90px;
+        }
+        #search>input {
+            font-size: 15px;
+            width: 200px;
+            padding: 10px;
+            border: 0px;
+            outline: none;
+            float: left;
+            line-height:100%;
+        }
+        #search>button {
+            width: 50px;
+            height: 100%;
+            border: 0;
+            background: #9E9E9E;
+            outline: none;
+            float: right;
+            color:#ffffff; 
+        }
+        body{
+            margin: 0;
+        }
+        #concert {
+            height :25px;
+            background: #16A085;
+        }
+        #calendar, #comment, #site {
+            height : 25px;
+            background-color: #9E9E9E;
+        }
+        #menubar {
+            left:50px; 
+            top:150px;
+            list-style: none;
+            height: 39px;
+            padding: 0;
+            margin: 0;
+            background: #E0E0E0;
+            width: 1080px;
+            position: absolute;
+        }
+        #menubar li{
+            float: left;
+            position: relative;
+            margin: 0px 0px 30px 30px;
+            color: black;
+            padding :0;
+        }
+        #menubar li a{
+            display: block;
+            font-family: "Han Sans";
+            font-weight: bold;
+            font-size: 18px;
+            padding: 7px 8px;
+            margin : 0;
+            color :white;
+            text-decoration: none;
+            width: 134px;
+            text-align: center;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+            border-radius: 5px;
+        }
+        #menubar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 0;
+            top: 40px;
+            width: 150px;
+            height: 272px;
+            background: #E0E0E0;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            z-index : 999;
+        }
+        #menubar ul li {
+            float: none;
+            margin: 0;
+            padding: 0;
+        }
+        #menubar ul a {
+            font-size: 15px;
+            font-weight: normal;
+            color:black;
+            text-align: center;
+            border-radius: 0px;
+            width: 110px;
+            height:20px;
+            margin: 0px 9px 0px 12px;
+        }
+        #menubar li:hover ul {
+            opacity: 1;
+            visibility: visible;
+        }
+        #menubar li:hover ul li {
+            height: 34px;
+            overflow: visible;
+            padding: 0;
+        }
+        #subcategory{
+            background: white;
+        }
+        #sub{
+            position: absolute;
+            opacity: 0;
+            visibility: hidden; 
+        }
+        #menu>div{
+            width: 150px;
+            height:25px;
+            text-align: center;
+            color: black;
+            line-height:25px;
+        }
+        #minimenu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        #minimenu > li {
+            font-size: 0.9em;
+            color: #9E9E9E;
+            float:left;
+            text-align: center;
+            position: relative;
+        }
+        #minimenu >li > a{
+            color : #9E9E9E;
+            text-decoration:none;
+        }
+        /* 미니메뉴바 알림 개수 */
+        #mycount{
+                display:inline-block;
+                width:16px;
+                height:16px;
+                border-radius: 8px;
+                background-color: red;
+                color:white;
+                margin:0px 0px 0px 3px;
+                font-size: 0.8em;
+        }
+        /* 로그인 폼 */
+        #login{
+                float:left;
+                background:#E0E0E0;
+                position: absolute;
+                top:195px;
+                left:50px;
+                margin-top: 8px;
+                border:0px;
+                border-radius: 2px;
+        }
+        /* 후기 페이지 본문 */
+        #sidemenu {
+            background-color: #E0E0E0;
+            position : absolute;
+            padding : 20px;
+            padding-top : 100px;
+            top : 345px;
+            left : 50px;
+            width : 225px;
+            height : 310px;
+        }
+        .explain {
+            position: absolute;
+            padding : 10px;
+            top : 203px;
+            left : 330px;
+            width : 780px;
+            height : 110px;
+        }
+        #show_list {
+            position : absolute;
+            top : 0px;
+            left : 675px;
+            margin-top : 10px;
+            margin-left : 50px;
+        }
+        .section{ 
+            position: absolute;
+            margin:0px;
+            top : 340px;
+            left: 280px;
+            width : 80%;
+            height : 70%;
+            float : left;
+        }
+        #writebtn > button{
+            border-radius : 5px;
+            position: absolute;
+            border:none;
+            cursor:pointer;
+            overflow:visible;
+            white-space: nowrap;
+            background-color : #E0E0E0;
+            left:50px;
+            top : 350px;
+        }
+        #search_list{
+            position : absolute;
+            top : 350px;
+            left : 629px;
+        }
+        .sub_news {
+            margin-top : 40px;
+            margin-left : 50px;
+            width : 800px;
+            text-align : center;
+        }
+        .img_sample {
+            background:url(/snippet/image?idx=59) no-repeat 0 0;
+        }
+        .paging_comm {
+            position: absolute;
+            top: 390px;
+            left:200px;
+            font-weight:bold;
+            font-size:14px;
+            line-height:14px;
+            text-align:center;
+            vertical-align:top;
+        }
+        .paging_comm .link_page {
+            display:inline-block;
+            padding:4px 6px 3px 5px;
+            margin-right:1px;
+            border:1px solid #eaeaea;
+            text-decoration:none;
+        }
+        .paging_comm .link_page:hover,.paging_comm em.link_page {
+            border:1px solid #536fe5;
+            color:#536fe5;
+            font-weight:bold;
+        }
+        .paging_comm .img_sample {
+            display:inline-block;
+            padding:6px 2px 4px 3px;
+            border:0 none;
+            font-weight:normal;
+            color:#999;
+            text-decoration:none;
+        }
+        .paging_comm .link_page:hover {
+            text-decoration:none;
+        }
+        .paging_comm .btn_prev {
+            padding-left:6px;
+            background-position:0 10px;
+        }
+        .paging_comm .btn_next {
+            padding-right:7px;
+            background-position:100% -10px;
+        }
+        .paging_comm a.btn_prev:hover {
+            background-position:0 -30px;
+            color:#333;
+        }
+        .paging_comm a.btn_next:hover {
+            background-position:100% -50px;
+            color:#333;
+        }
+        .paging_comm span.btn_prev {
+            background-position:0 10px;
+            color:#999;
+        }
+        .paging_comm span.btn_next {
+            background-position:100% -10px;
+            color:#999;
+        }
+        .play {
+            overflow : hidden;
+            text-overflow : ellipsis;
+            white-space : nowrap;
+        }
+    </style>
+    <script src="performance.js"></script>
+    <script src="member.js"></script>
+    <script src="basic.js"></script>
+</head>
+<body onload="load()">
+    <header>
+        <img id="title" src="media/title.png" width="250" height="80" alt="TicketMoa" onclick = "location.href = 'main.html'">
+        <!-- 미니메뉴바 -->
+        <ul id="minimenu">
+            <li style="left: 850px; top:1px"><a id="textlogin" href="javascript:logout()">로그아웃</a></li>
+            <li style="left: 856px;">|</li>
+            <li style="left:862px; top:1px"><a id="textassign" href = "assign.html">회원가입</a></li>
+            <li style="left:868px;">|</li>
+            <li style="left:874px; top:1px"><a href = mypage.html>마이페이지</a><span id="mycount"></span></li>
+            <li style="left:880px">|</li>
+            <li style="left:886px; top:1px"><a href = "bookmark.html">즐겨찾기</a></li>
+        </ul>
+        <div id="search">
+            <input type ="text" placeholder="검색어 입력">
+            <button type="submit">검색</button>
+            <!-- 검색어에 따른 검색 결과 나오는 과정 코드 입력 필요 -->
+        </div>
+    </header>
+    <!-- 상단메뉴바 -->
+    <nav>
+        <ul id = "menubar">
+            <li><a id="menu"><div><image src="media/menubar.png" width="20" height="20"></image>
+                메뉴&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ㅣ</div></a></li>
+            <li><a id = "concert" href="mainconcertk.html">국내콘서트</a>
+                <ul>
+                    <br>
+                    <li><a id="subcategory" href="mainconcertk.html">Hot 공연</a></li>
+                    <li><a id="subcategory" href="mainconcertk.html">New 공연</a></li>
+                    <li>
+                        <ul id ="sub">
+                            <br>
+                            <li><a id="subcategory" href="mainconcertk.html">장르별</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="rapmainconcertk.html">- 랩/힙합</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="trotmainconcertk.html">- 트로트</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="fanmainconcertk.html">- 팬클럽</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="festivalmainconcertk.html">- 페스티벌</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="indimainconcertk.html">- 발라드/인디</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="etcmainconcertk.html">- 기타</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>       
+            <li><a id = "concert" href="mainconcertov.html">내한콘서트</a>
+                <ul>
+                    <br>
+                    <li><a id="subcategory" href="mainconcertov.html">Hot 공연</a></li>
+                    <li><a id="subcategory" href="mainconcertov.html">New 공연</a></li>
+                    <li>
+                        <ul id ="sub">
+                            <br>
+                            <li><a id="subcategory" href="mainconcertov.html">장르별</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="rapmainconcertov.html">- 랩/힙합</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="trotmainconcertov.html">- 트로트</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="fanmainconcertov.html">- 팬클럽</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="festivalmainconcertov.html">- 페스티벌</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="indimainconcertov.html">- 발라드/인디</a></li>
+                            <li><a id="subcategory" style="text-align: left" href="etcmainconcertov.html">- 기타</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>       
+            <li><a id="calendar" href="calendar.html">달력</a></li>
+            <li><a id="comment" href="list_prac.html">후기</a></li>
+            <li><a id="site" href="sitegroup.html">예매사이트</a></li>
+        </ul>
+    </nav>
+    <aside>
+        <div id="aside1">최근 본 공연</div>
+        <div id="aside2">
+            <!-- 최근 본 공연 코드 입력 필요 -->
+        </div>
+    </aside>
+    <!-- 로그인 폼 -->
+    <div id="login">
+        <div id="loginsuccess" style="display: none;">
+            <img style="margin-left:40px; margin-top: 15px; margin-right: 20px;" 
+                src="media/profile.png" width="70px" height="70px" alt="프로필사진">
+            <p style="float:right; text-align: center; margin-right: 50px; margin-top: 30px;">
+                <span id="loginname"> </span>님<br>환영합니다!</p>
+            <br>
+            <p style="text-align: center; margin-bottom:15px; margin-top: 5px;">
+                <a style ="text-decoration: none; color:black;" href="mypage.html">마이페이지 </a>
+                |
+                <a style ="text-decoration: none; color:black;" href="javascript:logout()"> 로그아웃</a>
+            </p>
+        </div>
+    </div>
+    <script>
+        loginload();
+    </script>
+    <nav id = "sidemenu"> <!--둘 중 후기 보기에 현재 있는 상태 : 색깔을 달리 표현-->
+        <a href = "list_prac.html" style = "color : #16A085; text-decoration : none">
+            <strong>후기 보기</strong><br><br>
+        </a>
+        <a href = "write.html" style = "text-decoration : none; color : darkgrey">
+            <strong>후기 작성하기</strong>
+        </a>
+    </nav>
+    <section class = "explain" style = "background-color: #E0E0E0">
+        <!--해당 페이지에 대한 설명 부분-->
+        <h2 style = "color : #16A085; margin:10px;"><strong>후기</strong></h2>
+        <span style="margin:10px;">원하는 공연의 후기를 찾아보거나, 후기를 통해 새로운 공연을 알아보세요!
+            <br>&nbsp;&nbsp;내가 남기는 후기들을 통해 해당 게시판의 질이 올라갑니다.
+        </span>
+    </section> 
+    <section class = "section">
+        <!--리스트 게시판 시작-->
+        <table class = "sub_news" border = "1" cellspacing = "0" summary = "게시판의 글제목 리스트">
+            <colgroup>
+                <col width = "100">
+                <col>
+                <col width = "110">
+                <col width = "100">
+                <col width = "80">
+            </colgroup>
+            <thread>
+                <tr> <!--칼럼명-->
+                    <th scope = "col">작품명</th>
+                    <th scope = "col">제목</th>
+                    <th scope = "col">글쓴이</th>
+                    <th scope = "col">날짜</th>
+                    <th scope = "col">조회수</th>
+                </tr>
+            </thread>
+            <tbody>
+                <tr> <!--list.js에 있는 배열 review_list의 내용 참조-->
+                    <td class = "play"><script>
+                        var q = review_list[0].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="write_content.html" style = "text-decoration: none;" ><script>
+                            var q = review_list[0].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[0].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[0].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[0].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[1].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[1].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[1].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[1].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[1].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[2].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[2].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[2].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[2].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[2].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[3].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[3].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[3].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[3].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[3].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[4].play;
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[4].title;
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[4].name;
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[4].date;
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[4].hit;
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[5].play;
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[5].title;
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[5].name;
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[5].date;
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[5].hit;
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[6].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[6].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[6].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[6].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[6].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[7].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[7].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[7].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[7].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[7].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[8].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[8].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[8].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[8].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[8].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[9].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[9].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[9].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[9].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[9].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+                <tr>
+                    <td class = "play"><script>
+                        var q = review_list[10].play
+                        document.write(q.substring(0,15)+"...");
+                    </script></td>
+                    <td class = "title">
+                        <a href="#none" style = "text-decoration: none;" ><script>
+                            var q = review_list[10].title
+                            document.write(q.substring(0,15)+"...");
+                        </script></a>
+                    </td>
+                    <td class = "name"><script>
+                        var q = review_list[10].name
+                        document.write(q);
+                    </script></td>
+                    <td class = "date"><script>
+                        var q = review_list[10].date
+                        document.write(q.getMonth()+"월 "+q.getDate()+"일");
+                    </script></td>
+                    <td class = "hit"><script>
+                        var q = review_list[10].hit
+                        document.write(q);
+                    </script></td>
+                </tr>
+            </tbody>
+        </table>
+        <section id = "writebtn"> <!--후기 작성하기로 이어지는 버튼-->
+            <button type="button" onclick = "location.href = 'write.html'" style = "font-size : 18px">글작성</button>
+        </section>
+        <form id = "show_list">
+            보기 : <select> <!--후기 글을 정렬할 수 있는 버튼. 결과는 출력되지 않음-->
+                <option value = "1" selected>신규순</option>
+                <option value = "2">가나다순</option>
+                <option value = "3">조회순</option>
+            </select>
+        </form>
+        <form id = "search_list">
+            <select> <!--후기 글을 검색할 수 있는 버튼, 결과는 출력되지 않음-->
+                <option value = "1" selected>제목</option>
+                <option value = "2">작품명</option>
+                <option value = "3">작성자</option>
+                <option value = "4">날짜</option>
+            </select>
+            <input type = "search" size = "10" value = "">
+            <input type = "button" value = "검색">
+        </form>
+        <div class="paging_comm">
+            <!--페이지 이동 버튼. 해당하는 페이지 및 후기들을 만들지 않았기에 #none으로 이동하는 것 볼 수 있음.-->
+            <a href="#none" class="img_sample btn_prev">이전</a>
+            <span class="screen_out">현재페이지</span><em class="link_page">1</em>
+            <a href="#none" class="link_page">2</a>
+            <a href="#none" class="link_page">3</a>
+            <a href="#none" class="link_page">4</a>
+            <a href="#none" class="link_page">5</a>
+            <a href="#none" class="link_page">6</a>
+            <a href="#none" class="link_page">7</a>
+            <a href="#none" class="link_page">8</a>
+            <a href="#none" class="link_page">9</a>
+            <a href="#none" class="link_page">10</a>
+            <a href="#none" class="img_sample btn_next">다음</a>
+        </div>
+    </section>
+</body>
+</html>

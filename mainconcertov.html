@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TicketMoa/내한콘서트</title>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous"> 
+        <style>
+            /* 색깔코드 -> 옅은회색:#E0E0E0, 짙은회색:#9E9E9E, 초록:#16A085 */
+            #title{
+                position: absolute;
+                left:50px;
+                top:50px;
+            }
+            aside{
+                position : fixed;
+                top : 200px;
+                right : 10px;
+                height : 300px;
+                width : 100px;
+            }
+            #aside1{
+                height:50px;
+                width : 100px;
+                background-color:#16A085;
+                text-align:center;
+                line-height:50px;
+            }
+            #aside2{
+                height:250px;
+                width:100px;
+                background-color:#E0E0E0;
+            }
+            #search {
+                height :40px;
+                width: 300px;
+                border: 1px solid #E0E0E0;
+                background: #ffffff;
+                position: absolute;
+                left:820px; 
+                top:90px;
+            }
+            #search>input {
+                font-size: 15px;
+                width: 200px;
+                padding: 10px;
+                border: 0px;
+                outline: none;
+                float: left;
+                line-height:100%;
+            }
+            #search>button {
+                width: 50px;
+                height: 100%;
+                border: 0;
+                background: #9E9E9E;
+                outline: none;
+                float: right;
+                color:#ffffff; 
+            }
+            body{
+                margin: 0;
+            }
+            #concert {
+                height :25px;
+                background: #16A085;
+            }
+            #calendar, #comment, #site {
+                height : 25px;
+                background-color: #9E9E9E;
+            }
+            #menubar {
+                left:50px; 
+                top:150px;
+                list-style: none;
+                height: 39px;
+                padding: 0;
+                margin: 0;
+                background: #E0E0E0;
+                width: 1080px;
+                position: absolute;
+            }
+            #menubar li{
+                float: left;
+                position: relative;
+                margin: 0px 0px 30px 30px;
+                color: black;
+                padding :0;
+            }
+            #menubar li a{
+                display: block;
+                font-family: "Han Sans";
+                font-weight: bold;
+                font-size: 18px;
+                padding: 7px 8px;
+                margin : 0;
+                color :white;
+                text-decoration: none;
+                width: 134px;
+                text-align: center;
+                text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+                border-radius: 5px;
+            }
+            #menubar ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                position: absolute;
+                left: 0;
+                top: 40px;
+                width: 150px;
+                height: 272px;
+                background: #E0E0E0;
+                text-align: center;
+                opacity: 0;
+                visibility: hidden;
+                z-index : 999;
+            }
+            #menubar ul li {
+                float: none;
+                margin: 0;
+                padding: 0;
+            }
+            #menubar ul a {
+                font-size: 15px;
+                font-weight: normal;
+                color:black;
+                text-align: center;
+                border-radius: 0px;
+                width: 110px;
+                height:20px;
+                margin: 0px 9px 0px 12px;
+            }
+            #menubar li:hover ul {
+                opacity: 1;
+                visibility: visible;
+            }
+            #menubar li:hover ul li {
+                height: 34px;
+                overflow: visible;
+                padding: 0;
+            }
+            /* 미니메뉴바 알림 개수 */
+            #mycount{
+                display:inline-block;
+                width:16px;
+                height:16px;
+                border-radius: 8px;
+                background-color: red;
+                color:white;
+                margin:0px 0px 0px 3px;
+                font-size: 0.8em;
+            }
+            #subcategory{
+                background: white;
+            }
+            #sub{
+                position: absolute;
+                opacity: 0;
+                visibility: hidden; 
+            }
+            #menu>div{
+                width: 150px;
+                height:25px;
+                text-align: center;
+                color: black;
+                line-height:25px;
+            }
+            #minimenu {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+            }
+            #minimenu > li {
+                font-size: 0.9em;
+                color: #9E9E9E;
+                float:left;
+                text-align: center;
+                position: relative;
+            }
+            #minimenu >li > a{
+                color : #9E9E9E;
+                text-decoration:none;
+            }
+            #leftselect {
+                position: absolute;
+                text-align: center;
+                background: #E0E0E0;
+                width: 160px;
+                height:500px;
+            }
+            #leftmenu {
+                list-style:none;
+                padding: 0;
+            }
+            #all {
+                padding :5px 20px 5px 20px;
+                background: white;
+                border : none;
+            }
+            select {
+                position: relative;
+            }
+            #koreaconmain {
+                position: absolute;
+            }
+            #koreaconmain > div{
+                display: inline-block;
+                position: relative;
+                background:#E0E0E0; 
+                width: 150px;
+                height: 30px;
+                text-align: center;
+                padding: 9px 0px 0px 0px;
+            }
+            #koreacontitle{
+                position: relative;
+                list-style: none;
+            }
+            #koreacontitle > li {
+                position: relative;
+                float: left;
+                text-align: center;
+            }
+            #t4square{
+                padding:0;
+                margin:9px 0px 0px 0px; 
+                width : 850px; 
+                height: 260px;
+                border: solid 1px black;
+            }
+            #t4conpicture {
+                width : 170px;
+                height: 200px;
+                padding : 0px 10px;
+            }
+            #mainconpicture {
+                width : 170px;
+                height: 200px;
+                padding : 0px 10px;
+            }
+            #concertmain {
+                display: inline-block;
+                position: relative;
+            }
+            #conmain {
+                position: absolute;
+                text-align: center;
+            }
+            #conselectbox {
+                position: absolute;
+            }
+            #t4linkpicture {
+                float: left;
+                position: relative;
+                padding: 10px 0px 0px 10px;
+            }
+            .mainlinkpicture {
+                float: left;
+                position: relative;
+                padding: 10px 0px 0px 10px;
+                width: 200px;
+            }
+            #mainconset {
+                padding:0;
+                margin:9px 0px 0px 0px; 
+                width : 900px; 
+                height: 300px;
+            }  
+            #t4context {
+                display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 200px;
+            height: 20px;  
+            }
+            #maincontext {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 200px;
+            height: 20px;
+            }       
+        </style>
+    <script src="sort.js"></script>
+    <script src="conarrayov.js"></script>
+    <script src="likeconarray.js"></script>
+    <script src="performance.js"></script>
+    <script src="member.js"></script>
+    <script src="basic.js"></script>
+    </head>
+    <body onload="load()">
+        <header>
+            <img id="title" src="media/title.png" width="250" height="80" alt="TicketMoa" onclick = "location.href = 'main.html'">
+            <!-- 미니메뉴바 -->
+            <ul id="minimenu">
+                <li style="left: 850px; top:1px"><a id="textlogin" href="javascript:logout()">로그아웃</a></li>
+                <li style="left: 856px;">|</li>
+                <li style="left:862px; top:1px"><a id="textassign" href = "assign.html">회원가입</a></li>
+                <li style="left:868px;">|</li>
+                <li style="left:874px; top:1px"><a href = mypage.html>마이페이지</a><span id="mycount"></span></li>
+                <li style="left:880px">|</li>
+                <li style="left:886px; top:1px"><a href = "bookmark.html">즐겨찾기</a></li>
+            </ul> 
+            <div id="search">
+                <input type ="text" placeholder="검색어 입력">
+                <button type="submit">검색</button>
+                <!-- 검색어에 따른 검색 결과 나오는 과정 코드 입력 필요 -->
+            </div>
+        </header>
+        <!-- 상단메뉴바 -->
+        <nav>
+            <ul id = "menubar">
+                <li><a id="menu"><div><image src="media/menubar.png" width="20" height="20"></image>
+                    메뉴&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ㅣ</div></a></li>
+                <li><a id = "concert" href="mainconcertk.html">국내콘서트</a>
+                    <ul>
+                        <br>
+                        <li><a id="subcategory" href="mainconcertk.html">Hot 공연</a></li>
+                        <li><a id="subcategory" href="mainconcertk.html">New 공연</a></li>
+                        <li>
+                            <ul id ="sub">
+                                <br>
+                                <li><a id="subcategory" href="mainconcertk.html">장르별</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="rapmainconcertk.html">- 랩/힙합</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="trotmainconcertk.html">- 트로트</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="fanmainconcertk.html">- 팬클럽</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="festivalmainconcertk.html">- 페스티벌</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="indimainconcertk.html">- 발라드/인디</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="etcmainconcertk.html">- 기타</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>       
+                <li><a id = "concert" href="mainconcertov.html">내한콘서트</a>
+                    <ul>
+                        <br>
+                        <li><a id="subcategory" href="mainconcertov.html">Hot 공연</a></li>
+                        <li><a id="subcategory" href="mainconcertov.html">New 공연</a></li>
+                        <li>
+                            <ul id ="sub">
+                                <br>
+                                <li><a id="subcategory" href="mainconcertov.html">장르별</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="rapmainconcertov.html">- 랩/힙합</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="trotmainconcertov.html">- 트로트</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="fanmainconcertov.html">- 팬클럽</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="festivalmainconcertov.html">- 페스티벌</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="indimainconcertov.html">- 발라드/인디</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="etcmainconcertov.html">- 기타</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>       
+                <li><a id="calendar" href="calendar.html">달력</a></li>
+                <li><a id="comment" href="list_prac.html">후기</a></li>
+                <li><a id="site" href="sitegroup.html">예매사이트</a></li>
+            </ul>
+        </nav>
+        <aside>
+            <div id="aside1">최근 본 공연</div>
+            <div id="aside2">
+                <!-- 최근 본 공연 코드 입력 필요 -->
+            </div>
+        </aside>
+        <form id="leftselect" style="left:50px; top:200px">
+            <p style="font-size: 16px; font-weight: bold;">내한콘서트</p>
+            <hr>
+            <ul id="leftmenu" >
+            <li><button id="all" type="button"onclick="location.href='mainconcertov.html' ">전체보기</button></li>
+            <li><select name = "koreacon" style="height: 30px; top:10px" onchange="if(this.value) location.href=(this.value);">
+                <option value="mainconcertov.html" selected hidden>장르</option>
+                <option value = "rapmainconcertov.html">랩/힙합</option>
+                <option value="trotmainconcertov.html">트로트</option>
+                <option value="fanmainconcertov.html">팬클럽</option>
+                <option value="festivalmainconcertov.html">페스티벌</option>
+                <option value="indimainconcertov.html">발라드/인디</option>
+                <option value="etcmainconcertov.html">기타</option>
+                </select></li>
+                </ul>
+        </form>
+        <div id="koreaconmain">
+        <ul id="koreacontitle" >
+            <li style="font-weight : bold; font-size: 1.1em;  left:190px; top:190px"><i class="fas fa-circle" style="color:#16A085;">&nbsp;</i>
+                내한콘서트</li>
+            <li style="left:200px;top:190px">| 장르별</li>
+        </ul>
+        <div style="left : 230px; top: 200px">
+        <a><b>Top 4</b></a>
+        <div id="t4square">  
+        </div>
+        </div>
+    </div>
+    <div id="conmain" style="left : 230px;top : 550px">
+        <form id = "conselectbox" style="top :0px; left:745px;">
+        <select name = "conselectbox" onchange="koreansort(this);">
+            <option value="1" selected >기본(NEW순)</option>
+            <option value="2" >가나다순</option>
+        </select>
+    </form>
+    <div id="mainconset">             
+        </div>
+    </div>
+</body>
+</html>

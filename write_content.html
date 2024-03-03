@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TicketMoa 후기 보기</title>
+    <script src = "list.js">//후기 리스트 관련 배열을 가진 list.js 사용</script>
+    <script>
+        function loginload(){
+            var parent=document.getElementById("login");
+            var addchildren=document.getElementById("loginsuccess");
+            addchildren.style.display="block";
+            var name=document.getElementById("loginname");
+            name.innerHTML=loginmember.name;
+            parent.appendChild(addchildren);
+
+            var textlogin=document.getElementById("textlogin");
+            textlogin.innerHTML="로그아웃";
+            textlogin.setAttribute("href","javascript:logout()");
+
+            var textassign=document.getElementById("textassign");
+            textassign.innerHTML=loginmember.name + "님";
+            textassign.setAttribute("href","javascript:function(){}");
+        }
+    </script>
+    <style>
+        #title{
+            position: absolute;
+            left:50px;
+            top:50px;
+        }
+        aside{
+            position : fixed;
+            top : 200px;
+            right : 10px;
+            height : 300px;
+            width : 100px;
+        }
+        #aside1{
+            height:50px;
+            width : 100px;
+            background-color:#16A085;
+            text-align:center;
+            line-height:50px;
+        }
+        #aside2{
+            height:250px;
+            width:100px;
+            background-color:#E0E0E0;
+        }
+        #search {
+            height :40px;
+            width: 300px;
+            border: 1px solid #E0E0E0;
+            background: #ffffff;
+            position: absolute;
+            left:820px; 
+            top:90px;
+        }
+        #search>input {
+            font-size: 15px;
+            width: 200px;
+            padding: 10px;
+            border: 0px;
+            outline: none;
+            float: left;
+            line-height:100%;
+        }
+        #search>button {
+            width: 50px;
+            height: 100%;
+            border: 0;
+            background: #9E9E9E;
+            outline: none;
+            float: right;
+            color:#ffffff; 
+        }
+        body{
+            margin: 0;
+        }
+        #concert {
+            height :25px;
+            background: #16A085;
+        }
+        #calendar, #comment, #site {
+            height : 25px;
+            background-color: #9E9E9E;
+        }
+        #menubar {
+            left:50px; 
+            top:150px;
+            list-style: none;
+            height: 39px;
+            padding: 0;
+            margin: 0;
+            background: #E0E0E0;
+            width: 1080px;
+            position: absolute;
+        }
+        #menubar li{
+            float: left;
+            position: relative;
+            margin: 0px 0px 30px 30px;
+            color: black;
+            padding :0;
+        }
+        #menubar li a{
+            display: block;
+            font-family: "Han Sans";
+            font-weight: bold;
+            font-size: 18px;
+            padding: 7px 8px;
+            margin : 0;
+            color :white;
+            text-decoration: none;
+            width: 134px;
+            text-align: center;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+            border-radius: 5px;
+        }
+        #menubar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 0;
+            top: 40px;
+            width: 150px;
+            height: 272px;
+            background: #E0E0E0;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            z-index : 999;
+        }
+        #menubar ul li {
+            float: none;
+            margin: 0;
+            padding: 0;
+        }
+        #menubar ul a {
+            font-size: 15px;
+            font-weight: normal;
+            color:black;
+            text-align: center;
+            border-radius: 0px;
+            width: 110px;
+            height:20px;
+            margin: 0px 9px 0px 12px;
+        }
+        #menubar li:hover ul {
+            opacity: 1;
+            visibility: visible;
+        }
+        #menubar li:hover ul li {
+            height: 34px;
+            overflow: visible;
+            padding: 0;
+        }
+        #subcategory{
+            background: white;
+        }
+        #sub{
+            position: absolute;
+            opacity: 0;
+            visibility: hidden; 
+        }
+        #menu>div{
+            width: 150px;
+            height:25px;
+            text-align: center;
+            color: black;
+            line-height:25px;
+        }
+        #minimenu {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        #minimenu > li {
+            font-size: 0.9em;
+            color: #9E9E9E;
+            float:left;
+            text-align: center;
+            position: relative;
+        }
+        #minimenu >li > a{
+            color : #9E9E9E;
+            text-decoration:none;
+        }
+        /* 미니메뉴바 알림 개수 */
+        #mycount{
+                display:inline-block;
+                width:16px;
+                height:16px;
+                border-radius: 8px;
+                background-color: red;
+                color:white;
+                margin:0px 0px 0px 3px;
+                font-size: 0.8em;
+        }
+        /* 로그인 폼 */
+        #login{
+                float:left;
+                background:#E0E0E0;
+                position: absolute;
+                top:195px;
+                left:50px;
+                margin-top: 8px;
+                border:0px;
+                border-radius: 2px;
+        }
+        /* 후기 보기 본문 */
+        #sidemenu {
+            background-color: #E0E0E0;
+            position : absolute;
+            padding : 20px;
+            padding-top : 100px;
+            top : 345px;
+            left : 50px;
+            width : 225px;
+            height : 465px;
+        }
+        .explain {
+            position: absolute;
+            padding : 10px;
+            top : 203px;
+            left : 330px;
+            width : 780px;
+            height : 110px;
+        }
+        #review {
+            position : absolute;
+            border : darkgrey solid 2px;
+            padding : 20px;
+            top : 345px;
+            left : 330px;
+            width : 755px;
+            height : 500px;
+        }
+        #review > h3 {
+            padding : 20px;
+            border : darkgrey solid 1px;
+        }
+        #id_1 {
+            text-align : right;
+        }
+        #cont_1 {
+            padding : 20px;
+            width : 700px;
+            height : 200px;
+            line-height : 200%;
+            border : darkgrey solid 1px;
+        }
+        #return_btn {
+            border-radius : 5px;
+            position : absolute;
+            border: none;
+            cursor:pointer;
+            overflow:visible;
+            white-space: nowrap;
+            background-color : #E0E0E0;
+            left : 330px;
+            top : 898px;
+        }
+    </style>
+    <script src="performance.js"></script>
+    <script src="member.js"></script>
+    <script src="basic.js"></script>
+</head>
+<body>
+    <body onload="load()">
+        <header>
+            <img id="title" src="media/title.png" width="250" height="80" alt="TicketMoa" onclick = "location.href = 'main.html'">
+            <!-- 미니메뉴바 -->
+            <ul id="minimenu">
+                <li style="left: 850px; top:1px"><a id="textlogin" href="javascript:logout()">로그아웃</a></li>
+                <li style="left: 856px;">|</li>
+                <li style="left:862px; top:1px"><a id="textassign" href = "assign.html">회원가입</a></li>
+                <li style="left:868px;">|</li>
+                <li style="left:874px; top:1px"><a href = mypage.html>마이페이지</a><span id="mycount"></span></li>
+                <li style="left:880px">|</li>
+                <li style="left:886px; top:1px"><a href = "bookmark.html">즐겨찾기</a></li>
+            </ul>
+            <div id="search">
+                <input type ="text" placeholder="검색어 입력">
+                <button type="submit">검색</button>
+                <!-- 검색어에 따른 검색 결과 나오는 과정 코드 입력 필요 -->
+            </div>
+        </header>
+        <!-- 상단메뉴바 -->
+        <nav>
+            <ul id = "menubar">
+                <li><a id="menu"><div><image src="media/menubar.png" width="20" height="20"></image>
+                    메뉴&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ㅣ</div></a></li>
+                <li><a id = "concert" href="mainconcertk.html">국내콘서트</a>
+                    <ul>
+                        <br>
+                        <li><a id="subcategory" href="mainconcertk.html">Hot 공연</a></li>
+                        <li><a id="subcategory" href="mainconcertk.html">New 공연</a></li>
+                        <li>
+                            <ul id ="sub">
+                                <br>
+                                <li><a id="subcategory" href="mainconcertk.html">장르별</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="rapmainconcertk.html">- 랩/힙합</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="trotmainconcertk.html">- 트로트</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="fanmainconcertk.html">- 팬클럽</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="festivalmainconcertk.html">- 페스티벌</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="indimainconcertk.html">- 발라드/인디</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="etcmainconcertk.html">- 기타</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>       
+                <li><a id = "concert" href="mainconcertov.html">내한콘서트</a>
+                    <ul>
+                        <br>
+                        <li><a id="subcategory" href="mainconcertov.html">Hot 공연</a></li>
+                        <li><a id="subcategory" href="mainconcertov.html">New 공연</a></li>
+                        <li>
+                            <ul id ="sub">
+                                <br>
+                                <li><a id="subcategory" href="mainconcertov.html">장르별</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="rapmainconcertov.html">- 랩/힙합</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="trotmainconcertov.html">- 트로트</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="fanmainconcertov.html">- 팬클럽</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="festivalmainconcertov.html">- 페스티벌</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="indimainconcertov.html">- 발라드/인디</a></li>
+                                <li><a id="subcategory" style="text-align: left" href="etcmainconcertov.html">- 기타</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>       
+                <li><a id="calendar" href="calendar.html">달력</a></li>
+                <li><a id="comment" href="list_prac.html">후기</a></li>
+                <li><a id="site" href="sitegroup.html">예매사이트</a></li>
+            </ul>
+        </nav>
+    <aside>
+        <div id="aside1">최근 본 공연</div>
+        <div id="aside2">
+            <!-- 최근 본 공연 코드 입력 필요 -->
+        </div>
+    </aside>
+    <!-- 로그인 폼 -->
+    <div id="login">
+        <div id="loginsuccess" style="display: none;">
+            <img style="margin-left:40px; margin-top: 15px; margin-right: 20px;" 
+                src="media/profile.png" width="70px" height="70px" alt="프로필사진">
+            <p style="float:right; text-align: center; margin-right: 50px; margin-top: 30px;">
+                <span id="loginname"> </span>님<br>환영합니다!</p>
+            <br>
+            <p style="text-align: center; margin-bottom:15px; margin-top: 5px;">
+                <a style ="text-decoration: none; color:black;" href="mypage.html">마이페이지 </a>
+                |
+                <a style ="text-decoration: none; color:black;" href="javascript:logout()"> 로그아웃</a>
+            </p>
+        </div>
+    </div>
+    <script>
+        loginload();
+    </script>
+    <nav id = "sidemenu"> <!--두 카테고리 중 후기 보기에 있는 현재. 색깔로 표현-->
+        <a href = "list_prac.html" style = "color : #16A085; text-decoration : none">
+            <strong>후기 보기</strong><br><br>
+        </a>
+        <a href = "write.html" style = "text-decoration : none; color : darkgrey">
+            <strong>후기 작성하기</strong>
+        </a>
+    </nav>
+    <!--해당 페이지에 대한 설명 부분-->
+    <section class = "explain" style = "background-color: #E0E0E0">
+        <h2 style = "color : #16A085; margin:10px;"><strong>후기</strong></h2>
+        <span style="margin:10px;">원하는 공연의 후기를 찾아보거나, 후기를 통해 새로운 공연을 알아보세요!
+            <br>&nbsp;&nbsp;내가 남기는 후기들을 통해 해당 게시판의 질이 올라갑니다.
+        </span>
+    </section> 
+    <!--리뷰에 대한 정보를 list.js에서 가져온 배열의 정보로 보여줌.-->
+    <div id = "review">
+        <h3><script>document.write(review_list[0].title)</script></h3>
+        <p id = "id_1">
+            <strong>작성자 : </strong>
+            <script>document.write(review_list[0].name)</script>
+        </p>
+        <p id = "play_1">
+            <strong>공연명 : </strong>
+            <script>document.write(review_list[0].play)</script>
+        </p>
+        <p id = "day_1">
+            <strong>관람날짜 : </strong>
+            <script>document.write(review_list[0].date.toLocaleDateString())</script>
+        </p>
+        <p id = "eval_1">
+            <strong>평점 : </strong>
+            8.5
+        </p>
+        <p id = "cont_1">
+            <script>document.write(review_list[0].content)</script>
+        </p>
+    </div>
+    <!--해당 버튼은 후기 리스트로 돌아가는 버튼.-->
+    <section id = "return_btn">
+        <button type="button" onclick = "location.href = 'list_prac.html'" style = "font-size : 16px">목록보기</button>
+    </section>
+</body>
+</html>
